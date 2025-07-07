@@ -72,7 +72,7 @@ public final class Constants {
 
   public class VisionConstants {
     // AprilTag layout
-    public static AprilTagFieldLayout APRILTAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    public static AprilTagFieldLayout APRILTAG_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     // Camera names, must match names configured on coprocessor
     public static String CAM_0_NAME = "limelight";

@@ -115,28 +115,44 @@ public class SuperSystem extends SubsystemBase {
 
 
     public Command idleIntakes() {
-		return Commands.parallel(
-						IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE)
-					)
-				.withName("Idle Intakes");
+		
+		return IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE);
+					
 	}
 
 	public Command Score(){
-		return Commands.runOnce(
-			() -> IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.EXHAUST)
-		);
+		return IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.SCORE);
+		
+	}
+
+	public Command Intake(){
+		return Commands.sequence(
+                     
+		
+			Commands.either(
+					
+					IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE),
+					IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.INTAKE),
+					
+					() -> indexerBeamBrake.getDebouncedIfReal()
+			)
+					
+					
+			)
+			.withDeadline(indexerBeamBrake.stateWaitWithDebounceIfReal(true, 1.5))
+			.andThen(
+				IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE)
+			);
+		
 	}
 
 	public Command L2ScorePos(){
-		return Commands.runOnce(
-			() -> ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.L2_SCORE)
-		);
+		return ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.L2_SCORE);
 	}
 
 	public Command StowSlides(){
-		return Commands.runOnce(
-			() -> ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW)
-		);
+		return  ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW);
+		
 	}
 
 	//Manual Raising of Elevator to bump coral up

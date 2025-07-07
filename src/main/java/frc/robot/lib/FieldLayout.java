@@ -39,7 +39,7 @@ public class FieldLayout {
 	public static Distance kFieldWidth = Units.Feet.of(26.0).plus(Units.Inches.of(5.0));
 
 	public static AprilTagFieldLayout kAprilTagMap =
-			AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+			AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 	public static Distance kAprilTagWidth = Units.Inches.of(6.5);
 
 	public static final Pose2d blueRightStationAlignPose =

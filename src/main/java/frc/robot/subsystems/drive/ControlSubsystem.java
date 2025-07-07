@@ -48,6 +48,12 @@ public class ControlSubsystem {
     public void driverControls() {
 		SuperSystem s = SuperSystem.mInstance;
 
+		driver.leftTrigger().onTrue(
+			s.Intake()
+		).onFalse(
+			s.idleIntakes()
+		);
+
         driver.rightTrigger().onTrue(
 			s.Score()
 		).onFalse(

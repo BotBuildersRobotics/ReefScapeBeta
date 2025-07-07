@@ -60,7 +60,7 @@ public class BeamBreakIOCANRange extends BeamBreakIO {
 
 	@Override
 	public boolean get() {
-		return detectedDistance.lt(Units.Centimeters.of(4)); //detected;//lastSignalStrength > signalStrengthThreshold;
+		return detectedDistance.lt(Units.Centimeters.of(5)); //detected;//lastSignalStrength > signalStrengthThreshold;
 	}
 
 	@Override

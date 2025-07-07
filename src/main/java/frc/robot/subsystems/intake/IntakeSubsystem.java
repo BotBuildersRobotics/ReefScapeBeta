@@ -10,6 +10,7 @@ public class IntakeSubsystem extends MotorSubsystem<MotorIOTalonFXS> {
 	public static final Setpoint IDLE = Setpoint.withNeutralSetpoint();
 	public static final Setpoint INTAKE = Setpoint.withVoltageSetpoint(IntakeConstants.kIntakeVoltage);
 	public static final Setpoint EXHAUST = Setpoint.withVoltageSetpoint(IntakeConstants.kExhaustVoltage);
+	public static final Setpoint SCORE = Setpoint.withVoltageSetpoint(IntakeConstants.kScoreVoltage);
 	
 	public static final IntakeSubsystem mInstance = new IntakeSubsystem();
 

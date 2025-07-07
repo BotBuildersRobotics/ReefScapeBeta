@@ -30,7 +30,7 @@ public class ElevatorConstants {
 
 	public static final Distance kL1ScoringHeight = Units.Centimeters.of(50);
 	
-	public static final Distance kL2ScoringHeight = Units.Centimeters.of(20);
+	public static final Distance kL2ScoringHeight = Units.Centimeters.of(60);
 
 	public static final Distance kL2AlgaeHeight = Units.Centimeters.of(40);
 
@@ -50,13 +50,13 @@ public class ElevatorConstants {
 		TalonFXConfiguration FXConfig = new TalonFXConfiguration();
 		FXConfig.Slot0.kP = 9.6;
 		
-		FXConfig.Slot0.kV = 0.3;
+		FXConfig.Slot0.kV = 0;
       
-		FXConfig.Slot0.kG = 0.55; //volts to overcome gravity
+		FXConfig.Slot0.kG = 0; //volts to overcome gravity
       
-		FXConfig.Slot0.kS = 0.34;// volts to get over the static friction
+		FXConfig.Slot0.kS = 0;// volts to get over the static friction
     
-		FXConfig.Slot0.kA = 0.02; //volts for accel 
+		FXConfig.Slot0.kA = 0; //volts for accel 
 
 		FXConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
@@ -76,17 +76,17 @@ public class ElevatorConstants {
 		FXConfig.Voltage.PeakForwardVoltage = 12.0;
 		FXConfig.Voltage.PeakReverseVoltage = -12.0;
 
-		FXConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-		FXConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 16;
+		//FXConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+		//FXConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 16;
 
-		FXConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-		FXConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =0;
+		//FXConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+		//FXConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =0;
 
 		FXConfig.Feedback.SensorToMechanismRatio = kGearing;
 
 		FXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-		FXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		FXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
 		return FXConfig;
 	}
