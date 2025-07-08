@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "DeliverL3"
+            "name": "DeliverL2"
           }
         },
         {
@@ -32,6 +32,12 @@
           "type": "path",
           "data": {
             "pathName": "HPToReef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {

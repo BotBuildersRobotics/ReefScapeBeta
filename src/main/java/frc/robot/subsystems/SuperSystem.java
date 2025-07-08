@@ -127,6 +127,31 @@ public class SuperSystem extends SubsystemBase {
 		
 	}
 
+
+	public Command ScoreL2() {
+
+		return Commands.sequence(
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L2_SCORE),
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.SCORE),
+			Commands.waitSeconds(1),
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE)
+		);
+
+	}
+
+	public Command ScoreL3() {
+
+		return Commands.sequence(
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L3_SCORE),
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.SCORE),
+			Commands.waitSeconds(1),
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE)
+		);
+
+	}
+
 	public Command Intake(){
 		return Commands.sequence(
                      

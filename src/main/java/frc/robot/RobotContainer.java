@@ -96,61 +96,28 @@ public class RobotContainer {
 
 		CommandScheduler.getInstance().setPeriod(0.02);
 
-		NamedCommands.registerCommand("DeliverL2", 
+		NamedCommands.registerCommand("DeliverL3", 
 		
-				
-			Commands.runOnce(()-> 
-					superSystem.L2ScorePos().withTimeout(1).andThen(
-							Commands.runOnce( ()-> {
-								superSystem.Score();
-								
-							}
-						).andThen(Commands.waitSeconds(1.8))
-						.andThen(superSystem.StowSlides())
-						.andThen(superSystem.idleIntakes())
-							
-			))
-				
+			superSystem.ScoreL3()	
 			 
 		);
 
-		NamedCommands.registerCommand("DeliverL3", 
+		NamedCommands.registerCommand("DeliverL2", 
 		
-				
-			Commands.runOnce(()-> 
-					superSystem.L3ScorePos().withTimeout(1).andThen(
-							Commands.runOnce( ()-> {
-								superSystem.Score();
-								
-							}
-						).andThen(Commands.waitSeconds(1.8))
-						.andThen(superSystem.StowSlides())
-						.andThen(superSystem.idleIntakes())
-							
-			))
-				
+			superSystem.ScoreL2()	
 			 
 		);
 
 		NamedCommands.registerCommand("DeliverL1", 
-		
 				
-			Commands.runOnce(()-> 
-						superSystem.Score().withTimeout(1)
-						.andThen(Commands.waitSeconds(1.8))
-						.andThen(superSystem.StowSlides())
-						.andThen(superSystem.idleIntakes())
-							
-			)
+			superSystem.Score()
+
 		);
 
 		NamedCommands.registerCommand("Intake", 
 		
-				
-			Commands.runOnce(()-> 
-					superSystem.Intake().withDeadline(superSystem.BeamBreak())
-							
-			)
+			superSystem.Intake()
+
 		);
 		
 		DriveSubsystem.mInstance.getDrivetrain().seedFieldCentric();
