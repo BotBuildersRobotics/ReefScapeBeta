@@ -148,6 +148,10 @@ public class SuperSystem extends SubsystemBase {
 		
 	}
 
+	public Command BeamBreak(){
+		return indexerBeamBrake.stateWaitWithDebounceIfReal(true, 0);
+	}
+
 	public Command L2ScorePos(){
 		return ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.L2_SCORE);
 	}

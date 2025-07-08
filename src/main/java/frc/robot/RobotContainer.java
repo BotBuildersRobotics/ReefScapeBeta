@@ -96,9 +96,64 @@ public class RobotContainer {
 
 		CommandScheduler.getInstance().setPeriod(0.02);
 
+		NamedCommands.registerCommand("DeliverL2", 
+		
+				
+			Commands.runOnce(()-> 
+					superSystem.L2ScorePos().withTimeout(1).andThen(
+							Commands.runOnce( ()-> {
+								superSystem.Score();
+								
+							}
+						).andThen(Commands.waitSeconds(1.8))
+						.andThen(superSystem.StowSlides())
+						.andThen(superSystem.idleIntakes())
+							
+			))
+				
+			 
+		);
+
+		NamedCommands.registerCommand("DeliverL3", 
+		
+				
+			Commands.runOnce(()-> 
+					superSystem.L3ScorePos().withTimeout(1).andThen(
+							Commands.runOnce( ()-> {
+								superSystem.Score();
+								
+							}
+						).andThen(Commands.waitSeconds(1.8))
+						.andThen(superSystem.StowSlides())
+						.andThen(superSystem.idleIntakes())
+							
+			))
+				
+			 
+		);
+
+		NamedCommands.registerCommand("DeliverL1", 
+		
+				
+			Commands.runOnce(()-> 
+						superSystem.Score().withTimeout(1)
+						.andThen(Commands.waitSeconds(1.8))
+						.andThen(superSystem.StowSlides())
+						.andThen(superSystem.idleIntakes())
+							
+			)
+		);
+
+		NamedCommands.registerCommand("Intake", 
+		
+				
+			Commands.runOnce(()-> 
+					superSystem.Intake().withDeadline(superSystem.BeamBreak())
+							
+			)
+		);
 		
 		DriveSubsystem.mInstance.getDrivetrain().seedFieldCentric();
-		
 		
 		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
 		/*if(SmartDashboard.containsKey("Auto Mode")) {

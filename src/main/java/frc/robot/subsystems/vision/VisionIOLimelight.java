@@ -3,17 +3,22 @@ package frc.robot.subsystems.vision;
 
 
 import com.ctre.phoenix6.Utils;
+
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.vision.LimelightSubsystem.LimelightConfig;
 import frc.robot.subsystems.vision.LimelightHelpers;
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.LimelightConstants;
 
@@ -54,8 +59,13 @@ public class VisionIOLimelight extends VisionIO {
 
 	@Override
 	public void update() {
-		updateGyro();
-		setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(config.name), 1);
+		//updateGyro();	
+		if (DriverStation.getAlliance().get() == Alliance.Blue) {
+			setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue(config.name), 1);
+		} else if (DriverStation.getAlliance().get() == Alliance.Red) {
+			setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiRed(config.name), 1);
+		}
+		//setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(config.name), 1);
 		//setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue(config.name), 1);
 
 		SmartDashboard.putBoolean(config.name + "/Disabled", disabled);
