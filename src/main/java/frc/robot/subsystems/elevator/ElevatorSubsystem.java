@@ -9,9 +9,11 @@ import frc.robot.lib.io.MotorIOTalonFX;
 
 public class ElevatorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 	
-	public static final Setpoint JOG_UP = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(0.5, Units.Volts));
-	public static final Setpoint JOG_DOWN = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(-0.5, Units.Volts));
+	//public static final Setpoint JOG_UP = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(0.5, Units.Volts));
+	//public static final Setpoint JOG_DOWN = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(-0.5, Units.Volts));
 	
+	
+	public static final Setpoint IDLE = Setpoint.withVoltageSetpoint(Voltage.ofBaseUnits(0, Units.Volts));
 	
 	
 	public static final Setpoint L3_SCORE =
@@ -41,10 +43,10 @@ public class ElevatorSubsystem extends ServoMotorSubsystem<MotorIOTalonFX> {
 		super(
 				ElevatorConstants.getMotorIO(),
 				"Elevator",
-				ElevatorConstants.converter.toAngle(ElevatorConstants.kEpsilonThreshold),
-				ElevatorConstants.getServoConfig());
+				ElevatorConstants.converter.toAngle(ElevatorConstants.kEpsilonThreshold));
 		setCurrentPosition(ElevatorConstants.converter.toAngle(ElevatorConstants.kStowPosition));
 		applySetpoint(STOW);
+		applySetpoint(IDLE);
 	}
 
 	

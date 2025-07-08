@@ -123,8 +123,8 @@ public final class Constants {
   }
 
   public static final double AUTO_ALIGN_MAX_SPEED = 1.4; //meters per second
-  public static final double ALIGN_RIGHT_OFFSET = -0.15;
-  public static final double ALIGN_LEFT_OFFSET = 0.15; //meters from center
+  public static final double ALIGN_RIGHT_OFFSET = 0.25;
+  public static final double ALIGN_LEFT_OFFSET = -3; //meters from center
   public static final double ALIGN_DIS_REEF = -0.8; //meters - distance to reef
 
   public static class SwerveConstants {

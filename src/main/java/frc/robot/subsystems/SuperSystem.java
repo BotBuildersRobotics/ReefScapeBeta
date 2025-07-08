@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -31,6 +32,7 @@ import frc.robot.lib.FieldLayout;
 import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
 import frc.robot.lib.FieldLayout.Level;
+import frc.robot.lib.drive.AutoAlignPID2;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 
@@ -150,17 +152,38 @@ public class SuperSystem extends SubsystemBase {
 		return ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.L2_SCORE);
 	}
 
+	public Command L3ScorePos(){
+		return ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.L3_SCORE);
+	}
+
+	public Command reverseIntake(){
+		return IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.REVERSE);
+	}
+
 	public Command StowSlides(){
-		return  ElevatorSubsystem.mInstance.setpointCommand(ElevatorSubsystem.STOW);
+		return Commands.sequence(
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW)
+			
+		);
+		
+	}
+
+	public Command autoAlign(BooleanSupplier rightSide)
+	{
+		return Commands.sequence(Commands.defer(
+				() -> {
+					return new AutoAlignPID2(DriveSubsystem.mInstance, rightSide);
+				},
+				Set.of(DriveSubsystem.mInstance)));
 		
 	}
 
 	//Manual Raising of Elevator to bump coral up
-	public Command ElevatorUp() {
+	//public Command ElevatorUp() {
 
-		return Commands.runOnce(() -> ElevatorSubsystem.mInstance.applySetpoint(ElevatorSubsystem.JOG_UP));
+		//return Commands.runOnce(() -> ElevatorSubsystem.mInstance.applySetpoint(ElevatorSubsystem.JOG_UP));
 
-	}
+	//}
 
 
     public Command L1Elevator(){

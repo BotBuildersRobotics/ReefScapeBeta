@@ -21,42 +21,44 @@ import static edu.wpi.first.units.Units.*;
 
 public class ElevatorConstants {
 
-	public static final double kGearing = 6.285;
+	public static final double kGearing = 6.285 * 4;
 
-	public static final Util.DistanceAngleConverter converter = new Util.DistanceAngleConverter(
-			Units.Inches.of(2.0).plus(Units.Inches.of(0.125)).div(2.0));
-
+	//public static final Util.DistanceAngleConverter converter = new Util.DistanceAngleConverter(
+	//		Units.Inches.of(2.0).plus(Units.Inches.of(0.125)).div(2.0));
+	
+	public static final Util.DistanceAngleConverter converter = new Util.DistanceAngleConverter(Units.Centimeters.of(2.0));
+	
 	
 
 	public static final Distance kL1ScoringHeight = Units.Centimeters.of(50);
 	
-	public static final Distance kL2ScoringHeight = Units.Centimeters.of(60);
+	public static final Distance kL2ScoringHeight = Units.Centimeters.of(7);
 
 	public static final Distance kL2AlgaeHeight = Units.Centimeters.of(40);
 
 
-	public static final Distance kL3ScoringHeight = Units.Centimeters.of(15 );
+	public static final Distance kL3ScoringHeight = Units.Centimeters.of(28 );
 	
 	
 	public static final Distance kLIntakeHeight = Units.Centimeters.of(13);
 	
 	
-	public static final Distance kStowPosition = Units.Centimeters.of(0.0);
+	public static final Distance kStowPosition = Units.Centimeters.of(0.5);
 
-	public static final Distance kEpsilonThreshold = Units.Centimeters.of(1.0);
+	public static final Distance kEpsilonThreshold = Units.Centimeters.of(5.0);
 
 	
 	public static final TalonFXConfiguration getFXConfig() {
 		TalonFXConfiguration FXConfig = new TalonFXConfiguration();
-		FXConfig.Slot0.kP = 9.6;
+		FXConfig.Slot0.kP = 39.6;
 		
-		FXConfig.Slot0.kV = 0;
+		FXConfig.Slot0.kV = 0.2;
       
-		FXConfig.Slot0.kG = 0; //volts to overcome gravity
+		FXConfig.Slot0.kG = 0.66; //volts to overcome gravity
       
-		FXConfig.Slot0.kS = 0;// volts to get over the static friction
+		FXConfig.Slot0.kS = 0.2;// volts to get over the static friction
     
-		FXConfig.Slot0.kA = 0; //volts for accel 
+		FXConfig.Slot0.kA = 0.02; //volts for accel 
 
 		FXConfig.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
@@ -66,12 +68,12 @@ public class ElevatorConstants {
 		.withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(220));
 
 		FXConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-		FXConfig.CurrentLimits.SupplyCurrentLimit = 80.0;
-		FXConfig.CurrentLimits.SupplyCurrentLowerLimit = 80.0;
+		FXConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
+		FXConfig.CurrentLimits.SupplyCurrentLowerLimit = 60.0;
 		FXConfig.CurrentLimits.SupplyCurrentLowerTime = 0.1;
 
 		FXConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-		FXConfig.CurrentLimits.StatorCurrentLimit = 120.0;
+		FXConfig.CurrentLimits.StatorCurrentLimit = 60.0;
 
 		FXConfig.Voltage.PeakForwardVoltage = 12.0;
 		FXConfig.Voltage.PeakReverseVoltage = -12.0;
@@ -86,7 +88,7 @@ public class ElevatorConstants {
 
 		FXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-		FXConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		FXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
 		return FXConfig;
 	}
@@ -110,13 +112,5 @@ public class ElevatorConstants {
 		 
 	}
 
-	public static ServoHomingConfig getServoConfig() {
-		ServoHomingConfig servoConfig = new ServoHomingConfig();
-		servoConfig.kHomePosition = converter.toAngle(kStowPosition);
-		servoConfig.kHomingTimeout = Units.Seconds.of(0.5);
-		servoConfig.kHomingVoltage = Units.Volts.of(-0.5);
-		servoConfig.kSetHomedVelocity = converter.toAngle(Units.Inches.of(0.1)).per(Units.Second);
-
-		return servoConfig;
-	}
+	
 }

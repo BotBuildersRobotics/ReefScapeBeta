@@ -15,7 +15,7 @@ import frc.robot.Robot;
 
 
 public class LimelightConstants {
-	public static final String kLimelightName = "limelight-back";
+	public static final String kLimelightName = "limelight";
 
 	public static final int kEnabledPipeline = 0;
 	public static final int kDisabledPipeline = 1;
@@ -27,7 +27,7 @@ public class LimelightConstants {
 		
 			kRobotToCameraOffset = new Pose3d(
 					new Translation3d(Units.Centimeters.of(50), Units.Centimeters.of(15), Units.Centimeters.of(0)),
-					new Rotation3d(Units.Degree.of(0), Units.Degree.of(-15), Units.Degree.of(0)));
+					new Rotation3d(Units.Degree.of(0), Units.Degree.of(0), Units.Degree.of(0)));
 		
 	}
 

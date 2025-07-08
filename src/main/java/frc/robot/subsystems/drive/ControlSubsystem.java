@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.lib.FieldLayout.Level;
 import frc.robot.subsystems.SuperSystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 
 public class ControlSubsystem {
@@ -50,6 +52,10 @@ public class ControlSubsystem {
 
 		driver.leftTrigger().onTrue(
 			s.Intake()
+		);
+
+		driver.a().onTrue(
+			s.reverseIntake()
 		).onFalse(
 			s.idleIntakes()
 		);
@@ -60,19 +66,30 @@ public class ControlSubsystem {
 			s.idleIntakes()
 		);
 
-		driver.povUp().onTrue(
+		driver.b().onTrue(
 			s.L2ScorePos()
+		);
+
+		driver.y().onTrue(
+			s.L3ScorePos()
 		);
 
 		driver.x().onTrue(
 			s.StowSlides()
 		);
 
+		
+
+		bindAutoAlign(()-> true, driver.rightBumper());
+		
+		bindAutoAlign(() -> false, driver.leftBumper());
+
+
 		SwerveRequest.RobotCentric alignDrive = new SwerveRequest.RobotCentric();
 		
 		double SlowSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.08;
 
-		operator.povLeft()
+		driver.povLeft()
 		.whileTrue(
 			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
 			alignDrive.withVelocityX(( 0) ) 
@@ -81,9 +98,9 @@ public class ControlSubsystem {
 
 		));
 
-		SwerveRequest.RobotCentric slowMoveRight = new SwerveRequest.RobotCentric();
 		
-		operator.povRight()
+		
+		driver.povRight()
 		.whileTrue(
 			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
 			alignDrive.withVelocityX(( 0) ) 
@@ -92,7 +109,7 @@ public class ControlSubsystem {
 
 		));
 
-		operator.povUp()
+		driver.povUp()
 		.whileTrue(
 			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
 			alignDrive.withVelocityY(( 0) ) 
@@ -100,7 +117,7 @@ public class ControlSubsystem {
 			
 		));
 
-		operator.povDown()
+		driver.povDown()
 		.whileTrue(
 			DriveSubsystem.mInstance.getDrivetrain().applyRequest(() -> 
 			alignDrive.withVelocityY(( 0) ) 
@@ -108,8 +125,13 @@ public class ControlSubsystem {
 			
 
 		));
-
-
+	
+		/*driver.povCenter()
+		.whileTrue(
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.SLOW_INTAKE)	
+		).whileFalse(
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE)
+		);*/
 
 		overrideTrigger.onFalse(Commands.deferredProxy(() -> overrideBehavior.action.get()));
 
@@ -120,6 +142,19 @@ public class ControlSubsystem {
 	}
 
 
+	public void bindAutoAlign(BooleanSupplier rightSide, Trigger button){
+		button.onTrue(SuperSystem.mInstance
+						.autoAlign(rightSide)
+						.asProxy()
+						.until(overrideTrigger)
+						.unless(overrideTrigger)
+						.onlyWhile(button)
+						.withName("Auto Align PID")
+		).onFalse(
+			Commands.runOnce(() ->			
+					ControlSubsystem.mInstance.setRumble(false))
+		);
+	}
 	
 
 	public static enum OverrideBehavior {

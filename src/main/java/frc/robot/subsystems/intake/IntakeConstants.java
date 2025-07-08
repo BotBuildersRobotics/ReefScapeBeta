@@ -18,11 +18,15 @@ public class IntakeConstants {
 	private static final double kGearing = (24.0 / 12.0);
 
 	
-	public static final Voltage kIntakeVoltage = Units.Volts.of( 6.0);
+	public static final Voltage kIntakeVoltage = Units.Volts.of( 3);
 	
 	public static final Voltage kExhaustVoltage = Units.Volts.of(-5.0);
 
-	public static final Voltage kScoreVoltage = Units.Volts.of(8.0);
+	public static final Voltage kScoreVoltage = Units.Volts.of(3.5);
+
+	public static final Voltage kReverseVoltage = Units.Volts.of(-1);
+
+	public static final Voltage kSlowIntakeVoltage = Units.Volts.of(1);
 
 	public static TalonFXSConfiguration getFXConfig() {
 		TalonFXSConfiguration config = new TalonFXSConfiguration();

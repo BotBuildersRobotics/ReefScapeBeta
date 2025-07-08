@@ -84,9 +84,7 @@ public class RobotContainer {
 			
 			DriveSubsystem.mInstance,
 			ElevatorSubsystem.mInstance,
-			
 			Limelight.mInstance,
-			
 			IntakeSubsystem.mInstance,
 			SuperSystem.mInstance,
 			
@@ -99,7 +97,7 @@ public class RobotContainer {
 		CommandScheduler.getInstance().setPeriod(0.02);
 
 		
-
+		DriveSubsystem.mInstance.getDrivetrain().seedFieldCentric();
 		
 		
 		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
