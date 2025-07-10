@@ -60,11 +60,11 @@ public class VisionIOLimelight extends VisionIO {
 	@Override
 	public void update() {
 		//updateGyro();	
-		if (DriverStation.getAlliance().get() == Alliance.Blue) {
+		//if (DriverStation.getAlliance().get() == Alliance.Blue) {
 			setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue(config.name), 1);
-		} else if (DriverStation.getAlliance().get() == Alliance.Red) {
-			setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiRed(config.name), 1);
-		}
+		//} else if (DriverStation.getAlliance().get() == Alliance.Red) {
+		//	setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiRed(config.name), 1);
+		//}
 		//setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(config.name), 1);
 		//setLatestEstimate(LimelightHelpers.getBotPoseEstimate_wpiBlue(config.name), 1);
 
