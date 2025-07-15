@@ -97,7 +97,7 @@ public class AutoAlignPID2 extends Command {
           0), 
         0.1), -Constants.AUTO_ALIGN_MAX_SPEED, Constants.AUTO_ALIGN_MAX_SPEED);
 
-        
+
 
         final SwerveRequest.ApplyRobotSpeeds robotSpeed = new SwerveRequest.ApplyRobotSpeeds();
       

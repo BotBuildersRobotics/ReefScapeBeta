@@ -32,12 +32,12 @@ public class ElevatorConstants {
 
 	public static final Distance kL1ScoringHeight = Units.Centimeters.of(50);
 	
-	public static final Distance kL2ScoringHeight = Units.Centimeters.of(7);
+	public static final Distance kL2ScoringHeight = Units.Centimeters.of(6);
 
 	public static final Distance kL2AlgaeHeight = Units.Centimeters.of(40);
 
 
-	public static final Distance kL3ScoringHeight = Units.Centimeters.of(28 );
+	public static final Distance kL3ScoringHeight = Units.Centimeters.of(26 );
 	
 	
 	public static final Distance kLIntakeHeight = Units.Centimeters.of(13);

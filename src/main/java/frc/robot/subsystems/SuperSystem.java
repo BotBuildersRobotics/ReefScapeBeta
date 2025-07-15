@@ -122,9 +122,19 @@ public class SuperSystem extends SubsystemBase {
 					
 	}
 
+	public Command slowIntake() {
+		
+		return IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.SLOW_INTAKE);
+					
+	}
+
 	public Command Score(){
 		return IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.SCORE);
 		
+	}
+
+	public Command ScoreAutoL1(){
+		return IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.AUTO_SCORE);
 	}
 
 
@@ -132,7 +142,21 @@ public class SuperSystem extends SubsystemBase {
 
 		return Commands.sequence(
 			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L2_SCORE),
+			Commands.waitSeconds(0.3),
 			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.SCORE),
+			Commands.waitSeconds(1),
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE)
+		);
+
+	}
+
+	public Command ScoreAutoL2() {
+
+		return Commands.sequence(
+			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.L2_SCORE),
+			Commands.waitSeconds(0.3),
+			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.AUTO_SCORE),
 			Commands.waitSeconds(1),
 			ElevatorSubsystem.mInstance.setpointCommandWithWait(ElevatorSubsystem.STOW),
 			IntakeSubsystem.mInstance.setpointCommand(IntakeSubsystem.IDLE)

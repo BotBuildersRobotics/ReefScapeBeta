@@ -78,6 +78,12 @@ public class ControlSubsystem {
 			s.StowSlides()
 		);
 
+		driver.button(8).onTrue(
+			s.slowIntake()
+		).onFalse(
+			s.idleIntakes()
+		);
+
 		
 
 		bindAutoAlign(()-> true, driver.rightBumper());

@@ -24,6 +24,8 @@ public class IntakeConstants {
 
 	public static final Voltage kScoreVoltage = Units.Volts.of(3.5);
 
+	public static final Voltage kScoreAutoVoltage = Units.Volts.of(2.8);
+
 	public static final Voltage kReverseVoltage = Units.Volts.of(-1);
 
 	public static final Voltage kSlowIntakeVoltage = Units.Volts.of(1);

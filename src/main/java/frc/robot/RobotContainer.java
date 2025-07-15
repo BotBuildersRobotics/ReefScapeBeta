@@ -104,13 +104,15 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("DeliverL2", 
 		
-			superSystem.ScoreL2()	
+			superSystem.ScoreAutoL2()	
 			 
 		);
 
+		
+
 		NamedCommands.registerCommand("DeliverL1", 
 				
-			superSystem.Score()
+			superSystem.ScoreAutoL1()
 
 		);
 
