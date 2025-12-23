@@ -15,6 +15,8 @@ import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -33,6 +35,7 @@ import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
 import frc.robot.lib.FieldLayout.Level;
 import frc.robot.lib.drive.AutoAlignPID2;
+import frc.robot.lib.drive.DriveToPose;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 
@@ -62,6 +65,10 @@ public class SuperSystem extends SubsystemBase {
 
     private boolean targetingL3ReefIntake = true;
 
+	private DriveToPose driveToPose;
+
+	private AprilTagFieldLayout kAprilTagMap = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+
 
     public static SuperSystem getInstance() {
 
@@ -70,6 +77,10 @@ public class SuperSystem extends SubsystemBase {
 			mInstance = new SuperSystem();
 		}
 		return mInstance;
+	}
+
+	public SuperSystem(){
+		driveToPose = new DriveToPose(DriveSubsystem.mInstance);
 	}
 
     @Override
@@ -223,11 +234,15 @@ public class SuperSystem extends SubsystemBase {
 
 	public Command autoAlign(BooleanSupplier rightSide)
 	{
-		return Commands.sequence(Commands.defer(
-				() -> {
-					return new AutoAlignPID2(DriveSubsystem.mInstance, rightSide);
-				},
-				Set.of(DriveSubsystem.mInstance)));
+		Pose2d newRotation = new Pose2d( kAprilTagMap.getTagPose(11).get().toPose2d().getX(),
+		 kAprilTagMap.getTagPose(11).get().toPose2d().getY(), Rotation2d.fromDegrees(30));
+		Distance inOutDist = Units.Meters.of(-1);
+		Distance leftRightDist = Units.Meters.of(0);
+		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, new Rotation2d());
+
+		
+		return driveToPose.driveToPose(newRotation.transformBy(distAwayTransform));
+		
 		
 	}
 

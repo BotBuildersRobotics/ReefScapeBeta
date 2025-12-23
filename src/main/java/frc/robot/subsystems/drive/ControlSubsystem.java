@@ -149,7 +149,9 @@ public class ControlSubsystem {
 
 
 	public void bindAutoAlign(BooleanSupplier rightSide, Trigger button){
-		button.onTrue(SuperSystem.mInstance
+		
+		button.onTrue(SuperSystem.mInstance.autoAlign(rightSide));
+		/*button.onTrue(SuperSystem.mInstance
 						.autoAlign(rightSide)
 						.asProxy()
 						.until(overrideTrigger)
@@ -159,7 +161,8 @@ public class ControlSubsystem {
 		).onFalse(
 			Commands.runOnce(() ->			
 					ControlSubsystem.mInstance.setRumble(false))
-		);
+		);*/
+
 	}
 	
 
