@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -241,25 +244,19 @@ public class SuperSystem extends SubsystemBase {
 	}
 
 	public Command AutoPilotTest2(){
-		int nearestFace = 0;
-		double smallestDistance = Double.MAX_VALUE;
 		
-		for (int i = 0; i < 6; i++) {
-			double distance =
-				DriveSubsystem.mInstance.getPose()
-					.getTranslation()
-					.getDistance(FieldConstants.Reef.centerFaces[i].getTranslation());
-			if (distance < smallestDistance) {
-				smallestDistance = distance;
-				nearestFace = i;
-			}
-		}
 
-		
-		Pose2d reefPose = FieldConstants.Reef.centerFaces[nearestFace];
+		List<Pose2d> locations = new ArrayList<>();
+      	
+		Collections.addAll(locations, FieldConstants.Reef.centerFaces);
+      	Pose2d closest = DriveSubsystem.mInstance.getPose().nearest(locations);
 
+		Distance inOutDist = Units.Meters.of(-1);
+		Distance leftRightDist = Units.Meters.of(0.5);//rightSide.getAsBoolean() ? Units.Meters.of(0.5) : Units.Meters.of(-0.5);
+		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, new Rotation2d());
+		Pose2d foundReef = closest.transformBy(distAwayTransform);
 
-		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), reefPose, Rotation2d.kZero);
+		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), foundReef, foundReef.getRotation());
 
 		return apc;
 	}
@@ -283,24 +280,17 @@ public class SuperSystem extends SubsystemBase {
 	public Command APAlign()
 	{
 
-		int nearestFace = 0;
-		double smallestDistance = Double.MAX_VALUE;
-		
-		for (int i = 0; i < 6; i++) {
-			double distance =
-				DriveSubsystem.mInstance.getPose()
-					.getTranslation()
-					.getDistance(FieldConstants.Reef.centerFaces[i].getTranslation());
-			if (distance < smallestDistance) {
-				smallestDistance = distance;
-				nearestFace = i;
-			}
-		}
+		List<Pose2d> locations = new ArrayList<>();
+      	
+		Collections.addAll(locations, FieldConstants.Reef.centerFaces);
+      	Pose2d closest = DriveSubsystem.mInstance.getPose().nearest(locations);
 
-		
-		Pose2d reefPose = FieldConstants.Reef.centerFaces[nearestFace];
+		Distance inOutDist = Units.Meters.of(-1);
+		Distance leftRightDist = Units.Meters.of(0.5);//rightSide.getAsBoolean() ? Units.Meters.of(0.5) : Units.Meters.of(-0.5);
+		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, new Rotation2d());
+		Pose2d foundReef = closest.transformBy(distAwayTransform);
 
-		APTarget target = new APTarget(reefPose).withEntryAngle(Rotation2d.kZero);
+		APTarget target = new APTarget(foundReef).withEntryAngle(foundReef.getRotation());
 
 		return Commands.run(() ->{
 
@@ -326,30 +316,19 @@ public class SuperSystem extends SubsystemBase {
 
 		//find closest tag
 
-		Pose2d currentRobotPose = DriveSubsystem.mInstance.getPose();
-
-		int nearestFace = 0;
-		double smallestDistance = Double.MAX_VALUE;
-		
-		for (int i = 0; i < 6; i++) {
-			double distance =
-				currentRobotPose
-					.getTranslation()
-					.getDistance(FieldConstants.Reef.centerFaces[i].getTranslation());
-			if (distance < smallestDistance) {
-				smallestDistance = distance;
-				nearestFace = i;
-			}
-		}
+		List<Pose2d> locations = new ArrayList<>();
+      	
+		Collections.addAll(locations, FieldConstants.Reef.centerFaces);
+      	Pose2d closest = DriveSubsystem.mInstance.getPose().nearest(locations);
 
 		
-		Pose2d reefPose = FieldConstants.Reef.centerFaces[nearestFace];
+		
 		Distance inOutDist = Units.Meters.of(-1);
 		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(0.5) : Units.Meters.of(-0.5);
 		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, new Rotation2d());
 
 		
-		return driveToPose.driveToPose(reefPose.transformBy(distAwayTransform));
+		return driveToPose.driveToPose(closest.transformBy(distAwayTransform));
 		
 	}
 
