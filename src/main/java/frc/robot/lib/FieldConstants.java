@@ -11,6 +11,7 @@ package frc.robot.lib;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
  * have a blue alliance origin.
  */
 public class FieldConstants {
-  public static final FieldType fieldType = FieldType.WELDED;
+  public static final FieldType fieldType = FieldType.ANDYMARK;
 
   public static final double fieldLength = AprilTagLayoutType.OFFICIAL.getLayout().getFieldLength();
   public static final double fieldWidth = AprilTagLayoutType.OFFICIAL.getLayout().getFieldWidth();
@@ -194,7 +195,7 @@ public class FieldConstants {
 
   public static final double aprilTagWidth = Units.inchesToMeters(6.50);
   public static final int aprilTagCount = 22;
-  public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.NO_BARGE;
+  public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.OFFICIAL;
 
   @Getter
   public enum AprilTagLayoutType {
@@ -205,21 +206,7 @@ public class FieldConstants {
     NONE("2025-none");
 
     AprilTagLayoutType(String name) {
-      //if (Constants.disableHAL) {
-        try {
-          layout =
-              new AprilTagFieldLayout(
-                  Path.of(
-                      "src",
-                      "main",
-                      "deploy",
-                      "apriltags",
-                      fieldType.getJsonFolder(),
-                      "2025-official.json"));
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-     /*  } else {
+      
         try {
           layout =
               new AprilTagFieldLayout(
@@ -230,15 +217,18 @@ public class FieldConstants {
                       name + ".json"));
         } catch (IOException e) {
           throw new RuntimeException(e);
-        }*/
-      //}
+        }
 
-      try {
-        layoutString = new ObjectMapper().writeValueAsString(layout);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException(
-            "Failed to serialize AprilTag layout JSON " + toString() + "for Northstar");
-      }
+        if (layout == null) {
+            layoutString = "";
+          } else {
+            try {
+              layoutString = new ObjectMapper().writeValueAsString(layout);
+            } catch (JsonProcessingException e) {
+              throw new RuntimeException(
+                  "Failed to serialize AprilTag layout JSON " + toString() + "for Northstar");
+            }
+          }
     }
 
     private final AprilTagFieldLayout layout;
