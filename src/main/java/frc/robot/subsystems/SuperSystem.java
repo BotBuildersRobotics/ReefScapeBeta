@@ -7,10 +7,17 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
-
+import com.therekrab.autopilot.APConstraints;
+import com.therekrab.autopilot.APProfile;
+import com.therekrab.autopilot.APTarget;
+import com.therekrab.autopilot.Autopilot;
+import com.therekrab.autopilot.Autopilot.APResult;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -28,8 +35,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.RobotConstants;
-
+import frc.robot.lib.FieldConstants;
 import frc.robot.lib.FieldLayout;
 import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
@@ -38,7 +46,7 @@ import frc.robot.lib.drive.AutoAlignPID2;
 import frc.robot.lib.drive.DriveToPose;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
-
+import frc.robot.subsystems.drive.AutoPilotTest;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -232,17 +240,116 @@ public class SuperSystem extends SubsystemBase {
 		
 	}
 
+	public Command AutoPilotTest2(){
+		int nearestFace = 0;
+		double smallestDistance = Double.MAX_VALUE;
+		
+		for (int i = 0; i < 6; i++) {
+			double distance =
+				DriveSubsystem.mInstance.getPose()
+					.getTranslation()
+					.getDistance(FieldConstants.Reef.centerFaces[i].getTranslation());
+			if (distance < smallestDistance) {
+				smallestDistance = distance;
+				nearestFace = i;
+			}
+		}
+
+		
+		Pose2d reefPose = FieldConstants.Reef.centerFaces[nearestFace];
+
+
+		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), reefPose, Rotation2d.kZero);
+
+		return apc;
+	}
+
+	private static final APConstraints kConstraints = new APConstraints()
+    .withAcceleration(5.0)
+    .withJerk(2.0);
+
+	private static final APProfile kProfile = new APProfile(kConstraints)
+    .withErrorXY(Units.Centimeters.of(2))
+    .withErrorTheta(Units.Degrees.of(0.5))
+    .withBeelineRadius(Units.Centimeters.of(8));
+
+	public static final Autopilot kAutopilot = new Autopilot(kProfile);
+
+	private SwerveRequest.FieldCentricFacingAngle m_request = new SwerveRequest.FieldCentricFacingAngle()
+    .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance)
+    .withDriveRequestType(DriveRequestType.Velocity)
+    .withHeadingPID(4, 0, 0); /* change these values for your robot */
+
+	public Command APAlign()
+	{
+
+		int nearestFace = 0;
+		double smallestDistance = Double.MAX_VALUE;
+		
+		for (int i = 0; i < 6; i++) {
+			double distance =
+				DriveSubsystem.mInstance.getPose()
+					.getTranslation()
+					.getDistance(FieldConstants.Reef.centerFaces[i].getTranslation());
+			if (distance < smallestDistance) {
+				smallestDistance = distance;
+				nearestFace = i;
+			}
+		}
+
+		
+		Pose2d reefPose = FieldConstants.Reef.centerFaces[nearestFace];
+
+		APTarget target = new APTarget(reefPose).withEntryAngle(Rotation2d.kZero);
+
+		return Commands.run(() ->{
+
+				ChassisSpeeds robotRelativeSpeeds = DriveSubsystem.mInstance.getDrivetrain().getFieldVelocity();
+  				Pose2d pose = DriveSubsystem.mInstance.getPose();
+
+  				APResult output = kAutopilot.calculate(pose, robotRelativeSpeeds, target);
+
+				
+				DriveSubsystem.mInstance.getDrivetrain().setControl(m_request
+				.withVelocityX(output.vx())
+				.withVelocityY(output.vy())
+				.withTargetDirection(output.targetAngle()));
+			}
+			)
+    		//.until(/* snip */)
+    		.finallyDo(DriveSubsystem.mInstance::stop);
+		
+	}
+
 	public Command autoAlign(BooleanSupplier rightSide)
 	{
-		Pose2d newRotation = new Pose2d( kAprilTagMap.getTagPose(11).get().toPose2d().getX(),
-		 kAprilTagMap.getTagPose(11).get().toPose2d().getY(), Rotation2d.fromDegrees(30));
+
+		//find closest tag
+
+		Pose2d currentRobotPose = DriveSubsystem.mInstance.getPose();
+
+		int nearestFace = 0;
+		double smallestDistance = Double.MAX_VALUE;
+		
+		for (int i = 0; i < 6; i++) {
+			double distance =
+				currentRobotPose
+					.getTranslation()
+					.getDistance(FieldConstants.Reef.centerFaces[i].getTranslation());
+			if (distance < smallestDistance) {
+				smallestDistance = distance;
+				nearestFace = i;
+			}
+		}
+
+		
+		Pose2d reefPose = FieldConstants.Reef.centerFaces[nearestFace];
 		Distance inOutDist = Units.Meters.of(-1);
-		Distance leftRightDist = Units.Meters.of(0);
+		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(0.5) : Units.Meters.of(-0.5);
 		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, new Rotation2d());
 
 		
-		return driveToPose.driveToPose(newRotation.transformBy(distAwayTransform));
-		
+		return driveToPose.driveToPose(reefPose.transformBy(distAwayTransform));
 		
 	}
 

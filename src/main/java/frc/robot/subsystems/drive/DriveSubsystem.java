@@ -203,6 +203,10 @@ public class DriveSubsystem extends SubsystemBase {
 		driveRequest = request;
 	}
 
+	public void stop(){
+		drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
+	}
+
 	public Command followSwerveRequestCommand(
 			SwerveRequest.FieldCentric request, UnaryOperator<SwerveRequest.FieldCentric> updater) {
 		return run(() -> setSwerveRequest(updater.apply(request)))

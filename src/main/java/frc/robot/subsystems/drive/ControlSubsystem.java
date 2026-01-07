@@ -149,19 +149,18 @@ public class ControlSubsystem {
 
 
 	public void bindAutoAlign(BooleanSupplier rightSide, Trigger button){
-		
-		button.onTrue(SuperSystem.mInstance.autoAlign(rightSide));
-		/*button.onTrue(SuperSystem.mInstance
-						.autoAlign(rightSide)
+
+		button.whileTrue(SuperSystem.mInstance
+						//.autoAlign(rightSide)
+						.AutoPilotTest2()
 						.asProxy()
 						.until(overrideTrigger)
-						.unless(overrideTrigger)
-						.onlyWhile(button)
-						.withName("Auto Align PID")
+						.beforeStarting(() -> ControlSubsystem.mInstance.setRumble(true))
+						.finallyDo(() -> ControlSubsystem.mInstance.setRumble(false))
 		).onFalse(
-			Commands.runOnce(() ->			
+			Commands.runOnce(() ->
 					ControlSubsystem.mInstance.setRumble(false))
-		);*/
+		);
 
 	}
 	
