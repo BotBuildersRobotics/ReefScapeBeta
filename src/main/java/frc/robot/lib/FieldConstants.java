@@ -202,8 +202,8 @@ public class FieldConstants {
     OFFICIAL("2025-official"),
     NO_BARGE("2025-no-barge"),
     BLUE_REEF("2025-blue-reef"),
-    RED_REEF("2025-red-reef"),
-    NONE("2025-none");
+    RED_REEF("2025-red-reef");
+    
 
     AprilTagLayoutType(String name) {
       
