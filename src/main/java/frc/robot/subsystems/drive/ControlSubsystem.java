@@ -152,14 +152,11 @@ public class ControlSubsystem {
 
 		button.whileTrue(SuperSystem.mInstance
 						//.autoAlign(rightSide)
-						.AutoPilotTest2()
+						.AutoPilotTest2(rightSide)
 						.asProxy()
 						.until(overrideTrigger)
 						.beforeStarting(() -> ControlSubsystem.mInstance.setRumble(true))
 						.finallyDo(() -> ControlSubsystem.mInstance.setRumble(false))
-		).onFalse(
-			Commands.runOnce(() ->
-					ControlSubsystem.mInstance.setRumble(false))
 		);
 
 	}

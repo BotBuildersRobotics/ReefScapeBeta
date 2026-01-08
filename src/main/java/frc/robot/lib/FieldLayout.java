@@ -178,6 +178,7 @@ public class FieldLayout {
 		}
 
 		public static Map<Pose2d, Face> blueFaceMap = new HashMap<>();
+		public static List<Pose2d> blueFaces = new ArrayList<>();
 
 		static {
 			blueFaceMap.put(kAprilTagMap.getTagPose(17).get().toPose2d(), Face.NEAR_RIGHT);
@@ -186,6 +187,13 @@ public class FieldLayout {
 			blueFaceMap.put(kAprilTagMap.getTagPose(20).get().toPose2d(), Face.FAR_LEFT);
 			blueFaceMap.put(kAprilTagMap.getTagPose(21).get().toPose2d(), Face.FAR_CENTER);
 			blueFaceMap.put(kAprilTagMap.getTagPose(22).get().toPose2d(), Face.FAR_RIGHT);
+
+			blueFaces.add(kAprilTagMap.getTagPose(17).get().toPose2d());
+			blueFaces.add(kAprilTagMap.getTagPose(18).get().toPose2d());
+			blueFaces.add(kAprilTagMap.getTagPose(19).get().toPose2d());
+			blueFaces.add(kAprilTagMap.getTagPose(20).get().toPose2d());
+			blueFaces.add(kAprilTagMap.getTagPose(21).get().toPose2d());
+			blueFaces.add(kAprilTagMap.getTagPose(22).get().toPose2d());
 		}
 
 		public static Face getClosestFace(Pose2d pose, boolean isRedAlliance) {

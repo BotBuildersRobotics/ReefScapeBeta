@@ -1,15 +1,10 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
+import static edu.wpi.first.units.Units.Rotation;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
+import java.util.function.BooleanSupplier;
+
+
 import com.therekrab.autopilot.APConstraints;
 import com.therekrab.autopilot.APProfile;
 import com.therekrab.autopilot.APTarget;
@@ -20,10 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -40,18 +32,14 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotConstants;
-import frc.robot.lib.FieldConstants;
 import frc.robot.lib.FieldLayout;
 import frc.robot.lib.FieldLayout.Branch;
 import frc.robot.lib.FieldLayout.Branch.Face;
-import frc.robot.lib.FieldLayout.Level;
-import frc.robot.lib.drive.AutoAlignPID2;
 import frc.robot.lib.drive.DriveToPose;
 import frc.robot.lib.io.BeamBreakIO;
 import frc.robot.subsystems.SuperSystemConstants.BeamBreakConstants;
 import frc.robot.subsystems.drive.AutoPilotTest;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
@@ -243,20 +231,29 @@ public class SuperSystem extends SubsystemBase {
 		
 	}
 
-	public Command AutoPilotTest2(){
+	public Command AutoPilotTest2(BooleanSupplier rightSide){
 		
 
-		List<Pose2d> locations = new ArrayList<>();
-      	
-		Collections.addAll(locations, FieldConstants.Reef.centerFaces);
-      	Pose2d closest = DriveSubsystem.mInstance.getPose().nearest(locations);
 
-		Distance inOutDist = Units.Meters.of(-1);
-		Distance leftRightDist = Units.Meters.of(0.5);//rightSide.getAsBoolean() ? Units.Meters.of(0.5) : Units.Meters.of(-0.5);
-		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, new Rotation2d());
+		Branch closestBranch =  FieldLayout.Branch.getClosestBranch(DriveSubsystem.mInstance.getDrivetrain().getPose().get(), true);
+		Branch cc = FieldLayout.Branch.getClosestLeftRightBranch(!rightSide.getAsBoolean(), DriveSubsystem.mInstance.getDrivetrain().getPose().get(), true);
+		 
+		Pose2d closestX = FieldLayout.getCoralScoringPose( closestBranch);
+
+		SmartDashboard.putString("Target Branch", closestBranch.name());
+		SmartDashboard.putString("Target Branch 2", cc.name());
+		 
+		//Pose2d closest = AprilTagFields.k2025ReefscapeAndyMark.
+
+		Pose2d closest = kAprilTagMap.getTagPose(10).get().toPose2d();
+	
+
+		Distance inOutDist = Units.Meters.of(-0.5);
+		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(-0.3) : Units.Meters.of(-0.5);
+		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, Rotation2d.fromDegrees(closest.getRotation().getDegrees() + 0));
 		Pose2d foundReef = closest.transformBy(distAwayTransform);
 
-		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), foundReef, foundReef.getRotation());
+		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), foundReef, Rotation2d.fromDegrees(0));
 
 		return apc;
 	}
@@ -280,10 +277,10 @@ public class SuperSystem extends SubsystemBase {
 	public Command APAlign()
 	{
 
-		List<Pose2d> locations = new ArrayList<>();
-      	
-		Collections.addAll(locations, FieldConstants.Reef.centerFaces);
-      	Pose2d closest = DriveSubsystem.mInstance.getPose().nearest(locations);
+		Branch closestBranch =  FieldLayout.Branch.getClosestBranch(DriveSubsystem.mInstance.getPose(), true);
+
+		 
+		Pose2d closest = FieldLayout.getCoralScoringPose( closestBranch);
 
 		Distance inOutDist = Units.Meters.of(-1);
 		Distance leftRightDist = Units.Meters.of(0.5);//rightSide.getAsBoolean() ? Units.Meters.of(0.5) : Units.Meters.of(-0.5);
@@ -316,12 +313,10 @@ public class SuperSystem extends SubsystemBase {
 
 		//find closest tag
 
-		List<Pose2d> locations = new ArrayList<>();
-      	
-		Collections.addAll(locations, FieldConstants.Reef.centerFaces);
-      	Pose2d closest = DriveSubsystem.mInstance.getPose().nearest(locations);
+		Branch closestBranch =  FieldLayout.Branch.getClosestBranch(DriveSubsystem.mInstance.getPose(), true);
 
-		
+		 
+		Pose2d closest = FieldLayout.getCoralScoringPose( closestBranch);
 		
 		Distance inOutDist = Units.Meters.of(-1);
 		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(0.5) : Units.Meters.of(-0.5);

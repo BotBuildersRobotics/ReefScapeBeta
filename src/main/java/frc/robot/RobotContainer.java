@@ -75,7 +75,7 @@ public class RobotContainer {
 
 
 	/* Path follower */
-	private final SendableChooser<Command> autoChooser;
+	//private final SendableChooser<Command> autoChooser;
 
 	public RobotContainer() {
 		
@@ -124,11 +124,11 @@ public class RobotContainer {
 		
 		DriveSubsystem.mInstance.getDrivetrain().seedFieldCentric();
 		
-		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
+		//autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
 		/*if(SmartDashboard.containsKey("Auto Mode")) {
 			SmartDashboard.getEntry("Auto Mode").close();
 		}*/
-		SmartDashboard.putData("Auto Mode", autoChooser);
+		//SmartDashboard.putData("Auto Mode", autoChooser);
 
 		configureBindings();
 		
@@ -163,7 +163,7 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		
-		return autoChooser.getSelected();
-		// return Commands.print("Auto command selected");
+		//return autoChooser.getSelected();
+		 return Commands.print("Auto command selected");
 	}
 }
