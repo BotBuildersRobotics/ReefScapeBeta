@@ -150,9 +150,11 @@ public class ControlSubsystem {
 
 	public void bindAutoAlign(BooleanSupplier rightSide, Trigger button){
 
-		button.whileTrue(SuperSystem.mInstance
-						.AutoPilotTest2(rightSide)
-						.asProxy()
+		button.whileTrue( 
+						Commands.deferredProxy(() ->
+							SuperSystem.mInstance
+							.AutoPilotTest2(rightSide)
+						)
 						.until(overrideTrigger)
 						.beforeStarting(() -> ControlSubsystem.mInstance.setRumble(true))
 						.finallyDo(() -> ControlSubsystem.mInstance.setRumble(false))

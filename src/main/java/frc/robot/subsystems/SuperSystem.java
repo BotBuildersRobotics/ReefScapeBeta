@@ -46,6 +46,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.vision.LimelightHelpers;
+import frc.robot.subsystems.vision.LimelightHelpers.RawFiducial;
 
 
 
@@ -247,14 +248,16 @@ public class SuperSystem extends SubsystemBase {
 
 	public Command AutoPilotTest2(BooleanSupplier rightSide){
 		
-		//Pose2d closest = FieldLayout.Branch.getClosestFacePose(DriveSubsystem.mInstance.getDrivetrain().getPose(), true).get();
-	
-		
 		double tagid = LimelightHelpers.getLimelightNTDouble("", "tid");//.getLatestResults("limelight");
-
+		RawFiducial[] rawData = LimelightHelpers.getRawFiducials("limelight");
+		if(rawData == null || rawData.length == 0){
+			SmartDashboard.putBoolean("valid tags",false);
+			return Commands.none();
+		}
+		
 		Pose2d closest = kAprilTagMap.getTagPose((int)tagid).get().toPose2d();
 		Distance inOutDist = Units.Meters.of(0.5);
-		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(0.1) : Units.Meters.of(-0.1);
+		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(0.2) : Units.Meters.of(-0.1);
 		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, Rotation2d.fromDegrees( 180));
 		closest = closest.transformBy(distAwayTransform);
 		
@@ -267,7 +270,7 @@ public class SuperSystem extends SubsystemBase {
 
 		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), closest, Rotation2d.kZero);
 
-		return apc;
+		return Commands.deferredProxy(() ->apc);
 	}
 
 	private static final APConstraints kConstraints = new APConstraints()
