@@ -157,9 +157,6 @@ public class ControlSubsystem {
 						.until(overrideTrigger)
 						.beforeStarting(() -> ControlSubsystem.mInstance.setRumble(true))
 						.finallyDo(() -> ControlSubsystem.mInstance.setRumble(false))
-		).onFalse(
-			Commands.runOnce(() ->
-					ControlSubsystem.mInstance.setRumble(false))
 		);
 
 	}

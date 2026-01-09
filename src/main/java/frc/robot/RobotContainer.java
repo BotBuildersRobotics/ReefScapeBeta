@@ -124,7 +124,7 @@ public class RobotContainer {
 		
 		DriveSubsystem.mInstance.getDrivetrain().seedFieldCentric();
 		
-		autoChooser = AutoBuilder.buildAutoChooser("ForwardMove");
+		autoChooser = AutoBuilder.buildAutoChooser();
 		/*if(SmartDashboard.containsKey("Auto Mode")) {
 			SmartDashboard.getEntry("Auto Mode").close();
 		}*/
