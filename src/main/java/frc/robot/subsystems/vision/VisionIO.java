@@ -2,6 +2,8 @@ package frc.robot.subsystems.vision;
 
 import frc.robot.subsystems.vision.LimelightHelpers.PoseEstimate;
 
+
+
 public abstract class VisionIO {
 	protected boolean disabled = false;
 

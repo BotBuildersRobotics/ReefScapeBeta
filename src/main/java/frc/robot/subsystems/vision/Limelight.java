@@ -6,8 +6,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.vision.LimelightSubsystem;
-import frc.robot.subsystems.vision.VisionIOLimelight;
+
 import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class Limelight extends LimelightSubsystem<VisionIOLimelight> {
