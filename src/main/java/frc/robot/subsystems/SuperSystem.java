@@ -23,6 +23,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.ProtobufPublisher;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -231,6 +234,14 @@ public class SuperSystem extends SubsystemBase {
 		
 	}
 
+	 private final NetworkTable autoPilotTable = NetworkTableInstance.getDefault().getTable("AutoPilot");
+   
+	private final ProtobufPublisher<Pose2d> targetPose2d = autoPilotTable
+            .getProtobufTopic("AutoPilot Target Pose CMD", Pose2d.proto).publish();
+	
+	private final ProtobufPublisher<Pose2d> ReefPose2d = autoPilotTable
+            .getProtobufTopic("AutoPilot Reef", Pose2d.proto).publish();
+
 	public Command AutoPilotTest2(BooleanSupplier rightSide){
 		
 
@@ -241,17 +252,25 @@ public class SuperSystem extends SubsystemBase {
 		Pose2d closestX = FieldLayout.getCoralScoringPose( closestBranch);
 
 		SmartDashboard.putString("Target Branch", closestBranch.name());
+		
 		SmartDashboard.putString("Target Branch 2", cc.name());
 		 
 		//Pose2d closest = AprilTagFields.k2025ReefscapeAndyMark.
 
-		Pose2d closest = kAprilTagMap.getTagPose(10).get().toPose2d();
+		Pose2d closest = kAprilTagMap.getTagPose(11).get().toPose2d();
 	
+		ReefPose2d.accept(closestX);
 
-		Distance inOutDist = Units.Meters.of(-0.5);
-		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(-0.3) : Units.Meters.of(-0.5);
-		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, Rotation2d.fromDegrees(closest.getRotation().getDegrees() + 0));
+		Distance inOutDist = Units.Meters.of(0.5);
+		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(-0.1) : Units.Meters.of(-0.5);
+		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, Rotation2d.fromDegrees( closest.getRotation().getDegrees()));
 		Pose2d foundReef = closest.transformBy(distAwayTransform);
+
+		//foundReef = FieldLayout.handleAllianceFlip(foundReef, true);
+
+		targetPose2d.accept(foundReef);
+
+		SmartDashboard.putNumber("Target Branch Angle", foundReef.getRotation().getDegrees());
 
 		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), foundReef, Rotation2d.fromDegrees(0));
 

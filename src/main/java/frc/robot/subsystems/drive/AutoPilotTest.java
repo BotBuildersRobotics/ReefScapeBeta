@@ -51,7 +51,7 @@ public class AutoPilotTest extends Command {
             .getProtobufTopic("AutoPilot Output", ChassisSpeeds.proto).publish();
 
     private final ProtobufPublisher<Pose2d> targetPose2d = autoPilotTable
-            .getProtobufTopic("AutoPilot Output", Pose2d.proto).publish();
+            .getProtobufTopic("AutoPilot Target Pose", Pose2d.proto).publish();
 
     public AutoPilotTest(CommandSwerveDrivetrain drivetrain, Pose2d targetPose, Rotation2d entryAngle) {
         this.drivetrain = drivetrain;
