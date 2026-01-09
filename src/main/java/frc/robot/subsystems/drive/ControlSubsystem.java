@@ -151,7 +151,6 @@ public class ControlSubsystem {
 	public void bindAutoAlign(BooleanSupplier rightSide, Trigger button){
 
 		button.whileTrue(SuperSystem.mInstance
-						//.autoAlign(rightSide)
 						.AutoPilotTest2(rightSide)
 						.asProxy()
 						.until(overrideTrigger)

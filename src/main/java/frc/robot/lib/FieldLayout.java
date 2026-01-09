@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Contains various field dimensions and useful reference points. Dimensions are
@@ -200,6 +201,12 @@ public class FieldLayout {
 			Pose2d bluePose = handleAllianceFlip(pose, isRedAlliance);
 			Pose2d nearestPose = bluePose.nearest(new ArrayList<>(blueFaceMap.keySet()));
 			return blueFaceMap.get(nearestPose);
+		}
+
+		public static Supplier<Pose2d> getClosestFacePose(Supplier<Pose2d> pose, boolean isRedAlliance) {
+			Pose2d bluePose = handleAllianceFlip(pose.get(), isRedAlliance);
+			Pose2d nearestPose = bluePose.nearest(new ArrayList<>(blueFaceMap.keySet()));
+			return () -> handleAllianceFlip(nearestPose, isRedAlliance);
 		}
 
 		public static record BranchKey(boolean isLeft, Face face) {}

@@ -45,6 +45,7 @@ import frc.robot.subsystems.drive.AutoPilotTest;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.vision.LimelightHelpers;
 
 
 
@@ -104,6 +105,8 @@ public class SuperSystem extends SubsystemBase {
 			updateTargetedBranch();
 			updateTargetedFace();
 			updateTargetedReefIntake();
+			SmartDashboard.putString("Found Face", targetingFace.name());
+			SmartDashboard.putString("Found Branch", targetingBranch.name());
 		}
 	}
 
@@ -120,6 +123,7 @@ public class SuperSystem extends SubsystemBase {
 
     public void updateTargetedFace() {
 		targetingFace = targetingBranch.getKey().face();
+		
 	}
 
 	public void updateTargetedReefIntake() {
@@ -239,40 +243,29 @@ public class SuperSystem extends SubsystemBase {
 	private final ProtobufPublisher<Pose2d> targetPose2d = autoPilotTable
             .getProtobufTopic("AutoPilot Target Pose CMD", Pose2d.proto).publish();
 	
-	private final ProtobufPublisher<Pose2d> ReefPose2d = autoPilotTable
-            .getProtobufTopic("AutoPilot Reef", Pose2d.proto).publish();
+	
 
 	public Command AutoPilotTest2(BooleanSupplier rightSide){
 		
-
-
-		Branch closestBranch =  FieldLayout.Branch.getClosestBranch(DriveSubsystem.mInstance.getDrivetrain().getPose().get(), true);
-		Branch cc = FieldLayout.Branch.getClosestLeftRightBranch(!rightSide.getAsBoolean(), DriveSubsystem.mInstance.getDrivetrain().getPose().get(), true);
-		 
-		Pose2d closestX = FieldLayout.getCoralScoringPose( closestBranch);
-
-		SmartDashboard.putString("Target Branch", closestBranch.name());
-		
-		SmartDashboard.putString("Target Branch 2", cc.name());
-		 
-		//Pose2d closest = AprilTagFields.k2025ReefscapeAndyMark.
-
-		Pose2d closest = kAprilTagMap.getTagPose(11).get().toPose2d();
+		//Pose2d closest = FieldLayout.Branch.getClosestFacePose(DriveSubsystem.mInstance.getDrivetrain().getPose(), true).get();
 	
-		ReefPose2d.accept(closestX);
+		
+		double tagid = LimelightHelpers.getLimelightNTDouble("", "tid");//.getLatestResults("limelight");
 
+		Pose2d closest = kAprilTagMap.getTagPose((int)tagid).get().toPose2d();
 		Distance inOutDist = Units.Meters.of(0.5);
-		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(-0.1) : Units.Meters.of(-0.5);
-		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, Rotation2d.fromDegrees( closest.getRotation().getDegrees()));
-		Pose2d foundReef = closest.transformBy(distAwayTransform);
+		Distance leftRightDist = rightSide.getAsBoolean() ? Units.Meters.of(0.1) : Units.Meters.of(-0.1);
+		Transform2d distAwayTransform = new Transform2d(inOutDist,leftRightDist, Rotation2d.fromDegrees( 180));
+		closest = closest.transformBy(distAwayTransform);
+		
 
-		//foundReef = FieldLayout.handleAllianceFlip(foundReef, true);
+		
+		targetPose2d.accept(closest);
+		
 
-		targetPose2d.accept(foundReef);
+		SmartDashboard.putNumber("Target Branch Angle", closest.getRotation().getDegrees());
 
-		SmartDashboard.putNumber("Target Branch Angle", foundReef.getRotation().getDegrees());
-
-		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), foundReef, Rotation2d.fromDegrees(0));
+		AutoPilotTest apc = new AutoPilotTest(DriveSubsystem.mInstance.getDrivetrain(), closest, Rotation2d.kZero);
 
 		return apc;
 	}
